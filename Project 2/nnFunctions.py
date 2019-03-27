@@ -75,9 +75,9 @@ def nnObjFunction(params, *args):
     %     input layer to hidden layer) and W2 (weights of connections from
     %     hidden layer to output layer) where all of the weights are contained
     %     in a single vector.
-    % n_input: number of node in input layer (not including the bias node)
-    % n_hidden: number of node in hidden layer (not including the bias node)
-    % n_class: number of node in output layer (number of classes in
+    % n_input: number of nodes in input layer (not including the bias node)
+    % n_hidden: number of nodes in hidden layer (not including the bias node)
+    % n_class: number of nodes in output layer (number of classes in
     %     classification problem
     % train_data: matrix of training data. Each row of this matrix
     %     represents the feature vector of a particular image
@@ -99,6 +99,9 @@ def nnObjFunction(params, *args):
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
+    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat[range(train_label.shape[0]), train_label] = 1
+
 
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
