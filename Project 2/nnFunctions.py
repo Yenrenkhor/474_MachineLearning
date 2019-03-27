@@ -105,8 +105,9 @@ def nnObjFunction(params, *args):
 
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
+    out=np.matmul(train_data,W1.T)
     print(train_data.shape)
-    count = 0
+    '''count = 0
 
     h1 = np.zeros(n_hidden)
     output = np.array(np.zeros(n_class))
@@ -119,7 +120,7 @@ def nnObjFunction(params, *args):
         net = np.dot(W2, hidden_input)
         output = sigmoid(net)
         x = 'haha'
-
+    '''
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
     # your gradient matrices are grad_W1 and grad_W2
     # you would use code similar to the one below to create a flat array
