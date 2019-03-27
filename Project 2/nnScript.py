@@ -3,7 +3,7 @@ Neural Network Script Starts here
 '''
 from nnFunctions import *
 # you may experiment with a small data set (mnist_sample.pickle) first
-filename = 'mnist_all.pickle'
+filename = 'mnist_sample.pickle'
 #filename = 'AI_quick_draw.pickle'
 train_data, train_label, test_data, test_label = preprocess(filename)
 
@@ -37,7 +37,7 @@ nn_params = minimize(nnObjFunction, initialWeights, jac=True, args=args, method=
 # Reshape nnParams from 1D vector into W1 and W2 matrices
 W1 = nn_params.x[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
 W2 = nn_params.x[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
-print("training done!")
+print("chicken done!")
 
 # Test the computed parameters
 
