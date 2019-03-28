@@ -75,9 +75,9 @@ def nnObjFunction(params, *args):
     %     input layer to hidden layer) and W2 (weights of connections from
     %     hidden layer to output layer) where all of the weights are contained
     %     in a single vector.
-    % n_input: number of node in input layer (not including the bias node)
-    % n_hidden: number of node in hidden layer (not including the bias node)
-    % n_class: number of node in output layer (number of classes in
+    % n_input: number of nodes in input layer (not including the bias node)
+    % n_hidden: number of nodes in hidden layer (not including the bias node)
+    % n_class: number of nodes in output layer (number of classes in
     %     classification problem
     % train_data: matrix of training data. Each row of this matrix
     %     represents the feature vector of a particular image
@@ -100,6 +100,9 @@ def nnObjFunction(params, *args):
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
+    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat[range(train_label.shape[0]), train_label] = 1
+
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
 
@@ -111,21 +114,14 @@ def nnObjFunction(params, *args):
     print(input_2.shape)
     print(W2.shape)
     net = np.dot(W2, input_2)
-    O = sigmoid(net)
-    x = 'haha'
+    o = sigmoid(net).T
+    error=-np.sum(np.multiply(label_mat,np.log(o))+np.multiply((1-label_mat),np.log(1-o)),axis=1)
+    obj_val=np.sum(error)/train_data.shape[0]
+
+
     output = np.array(np.zeros(n_class))
 
-    
 
-    # for i in range(train_data.shape[0]):
-    #     input_vector = train_data[i]
-    #     a = np.dot(W1, input_vector)
-    #     h1 = sigmoid(a)
-    #     hidden_input = h1[:, np.newaxis]
-    #     hidden_input = np.vstack((hidden_input, 1))
-    #     net = np.dot(W2, hidden_input)
-    #     output = sigmoid(net)
-    #     x = 'haha'
 
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
     # your gradient matrices are grad_W1 and grad_W2
