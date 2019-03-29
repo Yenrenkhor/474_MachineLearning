@@ -1,58 +1,5 @@
-import numpy as np
-from scipy.optimize import minimize
-from math import sqrt
-import pickle
-'''
-You need to modify the functions except for initializeWeights() and preprocess()
-'''
+from nnFunctions import *
 
-def initializeWeights(n_in, n_out):
-    '''
-    initializeWeights return the random weights for Neural Network given the
-    number of node in the input layer and output layer
-
-    Input:
-    n_in: number of nodes of the input layer
-    n_out: number of nodes of the output layer
-
-    Output:
-    W: matrix of random initial weights with size (n_out x (n_in + 1))
-    '''
-    epsilon = sqrt(6) / sqrt(n_in + n_out + 1)
-    W = (np.random.rand(n_out, n_in + 1) * 2 * epsilon) - epsilon
-    return W
-
-
-def preprocess(filename,scale=True):
-    '''
-     Input:
-     filename: pickle file containing the data_size
-     scale: scale data to [0,1] (default = True)
-     Output:
-     train_data: matrix of training set. Each row of train_data contains
-       feature vector of a image
-     train_label: vector of label corresponding to each image in the training
-       set
-     test_data: matrix of training set. Each row of test_data contains
-       feature vector of a image
-     test_label: vector of label corresponding to each image in the testing
-       set
-    '''
-    with open(filename, 'rb') as f:
-        train_data = pickle.load(f)
-        train_label = pickle.load(f)
-        test_data = pickle.load(f)
-        test_label = pickle.load(f)
-    # convert data to double
-    train_data = train_data.astype(float)
-    test_data = test_data.astype(float)
-
-    # scale data to [0,1]
-    if scale:
-        train_data = train_data/255
-        test_data = test_data/255
-
-    return train_data, train_label, test_data, test_label
 
 def sigmoid(z):
     '''
@@ -132,22 +79,17 @@ def nnObjFunction(params, *args):
     return (obj_val, obj_grad)
 
 
-def nnPredict(W1, W2, data):
-    '''
-    % nnPredict predicts the label of data given the parameter W1, W2 of Neural
-    % Network.
 
-    % Input:
-    % W1: matrix of weights for hidden layer units
-    % W2: matrix of weights for output layer units
-    % data: matrix of data. Each row of this matrix represents the feature
-    %       vector of a particular image
-
-    % Output:
-    % label: a column vector of predicted labels
-    '''
-
-    labels = np.zeros((data.shape[0],))
-    # Your code here
-
-    return labels
+n_input = 5
+n_hidden = 3
+n_class = 2
+training_data = np.array([np.linspace(0,1,num=5),np.linspace(1,0,num=5)])
+training_label = np.array([0,1])
+lambdaval = 0
+params = np.linspace(-5,5, num=26)
+args = (n_input, n_hidden, n_class, training_data, training_label, lambdaval)
+objval,objgrad = nnObjFunction(params, *args)
+print("Objective value:")
+print(objval)
+print("Gradient values: ")
+print(objgrad)
