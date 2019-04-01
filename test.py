@@ -47,7 +47,7 @@ def nnObjFunction(params, *args):
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
-    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat = np.zeros((train_label.shape[0], n_class))
     label_mat[range(train_label.shape[0]), train_label] = 1
 
     bias = np.ones((train_data.shape[0], 1), dtype=int)
@@ -58,13 +58,24 @@ def nnObjFunction(params, *args):
     hid_1 = sigmoid(a)
     bias_2 = np.ones((1, train_data.shape[0]), dtype=int)
     input_2 = np.vstack((hid_1, bias_2))
-    print(input_2.shape)
-    print(W2.shape)
+    # print(input_2.shape)
+    # print(W2.shape)
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
-    error=-np.sum(np.multiply(label_mat,np.log(o))+np.multiply((1-label_mat),np.log(1-o)),axis=1)
+    ologjohnson=np.log(o)
+    j1=np.multiply(label_mat,ologjohnson)
+    j2=np.multiply((1-label_mat),np.log(1-o))
+    error=-np.sum(j1+j2,axis=1)
     obj_val=np.sum(error)/train_data.shape[0]
-    print(obj_val)
+
+    delta = o - label_mat
+    djw2 = np.matmul(delta.T, input_2.T)
+    print(djw2)
+
+    W2noBias = W2[:, 0:50]
+    coeff = np.multiply((1 - hid_1), hid_1)
+    djw1 = np.dot(delta, W2)
+    #obj_grad = np.hstack()
 
     output = np.array(np.zeros(n_class))
 

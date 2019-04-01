@@ -100,9 +100,10 @@ def nnObjFunction(params, *args):
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
 
-    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat = np.zeros((train_label.shape[0], n_class))
     label_mat[range(train_label.shape[0]), train_label] = 1
 
+    train_dataNoBias=train_data
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
 
@@ -115,20 +116,22 @@ def nnObjFunction(params, *args):
     print(W2.shape)
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
-    error=-np.sum(np.multiply(label_mat,np.log(o))+np.multiply((1-label_mat),np.log(1-o)),axis=1)
-    obj_val=np.sum(error)/train_data.shape[0]
+    error = -np.sum(np.multiply(label_mat, np.log(o))+np.multiply((1-label_mat), np.log(1-o)), axis=1)
+    obj_val = np.sum(error)/train_data.shape[0]
     print(obj_val)
-
-    output = np.array(np.zeros(n_class))
-
-
 
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
     # your gradient matrices are grad_W1 and grad_W2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
-    obj_grad = np.zeros(params.shape)
 
+    delta=o-label_mat
+    djw2=np.matmul(delta.T, input_2.T)
+
+    W2noBias = W2[:,0:50]
+    coeff=np.matmul(np.multiply((1-hid_1), hid_1),train_data)
+    djw1=np.dot(delta, W2)
+    obj_grad = np.hstack()
     return (obj_val, obj_grad)
 
 
