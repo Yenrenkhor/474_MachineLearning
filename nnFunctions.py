@@ -95,6 +95,7 @@ def nnObjFunction(params, *args):
     '''
     n_input, n_hidden, n_class, train_data, train_label, lambdaval = args
     # First reshape 'params' vector into 2 matrices of weights W1 and W2
+    n_data=train_data.shape[0]
 
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
@@ -103,7 +104,6 @@ def nnObjFunction(params, *args):
     label_mat = np.zeros((train_label.shape[0], n_class))
     label_mat[range(train_label.shape[0]), train_label] = 1
 
-    train_dataNoBias=train_data
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
 
@@ -112,8 +112,6 @@ def nnObjFunction(params, *args):
     hid_1 = sigmoid(a)
     bias_2 = np.ones((1, train_data.shape[0]), dtype=int)
     input_2 = np.vstack((hid_1, bias_2))
-    print(input_2.shape)
-    print(W2.shape)
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
     error = -np.sum(np.multiply(label_mat, np.log(o))+np.multiply((1-label_mat), np.log(1-o)), axis=1)
@@ -126,12 +124,17 @@ def nnObjFunction(params, *args):
     # obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
 
     delta=o-label_mat
-    djw2=np.matmul(delta.T, input_2.T)
+    djw2=np.matmul(delta.T, input_2.T)/n_data
 
-    W2noBias = W2[:,0:50]
-    coeff=np.matmul(np.multiply((1-hid_1), hid_1),train_data)
-    djw1=np.dot(delta, W2)
-    obj_grad = np.hstack()
+
+    W2noBias = W2[:,0:-1]
+    z=np.multiply((1-hid_1), hid_1)
+    err=np.multiply(np.dot(delta, W2noBias), z.T)
+    djw1=np.sqrt(np.matmul(np.multiply(z, err.T),train_data)/n_data)
+
+    obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
+
+
     return (obj_val, obj_grad)
 
 
