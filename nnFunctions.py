@@ -10,11 +10,9 @@ def initializeWeights(n_in, n_out):
     '''
     initializeWeights return the random weights for Neural Network given the
     number of node in the input layer and output layer
-
     Input:
     n_in: number of nodes of the input layer
     n_out: number of nodes of the output layer
-
     Output:
     W: matrix of random initial weights with size (n_out x (n_in + 1))
     '''
@@ -69,7 +67,6 @@ def nnObjFunction(params, *args):
     % nnObjFunction computes the value of objective function (cross-entropy
     % with regularization) given the weights and the training data and lambda
     % - regularization hyper-parameter.
-
     % Input:
     % params: vector of weights of 2 matrices W1 (weights of connections from
     %     input layer to hidden layer) and W2 (weights of connections from
@@ -85,7 +82,6 @@ def nnObjFunction(params, *args):
     %     in the vector represents the truth label of its corresponding image.
     % lambda: regularization hyper-parameter. This value is used for fixing the
     %     overfitting problem.
-
     % Output:
     % obj_val: a scalar value representing value of error function
     % obj_grad: a SINGLE vector (not a matrix) of gradient value of error function
@@ -99,34 +95,41 @@ def nnObjFunction(params, *args):
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
-    label_mat = np.zeros((train_label.shape[0], 10))
+    
+    #1 of k
+    label_mat = np.zeros((train_label.shape[0], n_class))
     label_mat[range(train_label.shape[0]), train_label] = 1
 
-
+    train_dataNoBias=train_data
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
-    out=np.matmul(train_data,W1.T)
-    print(train_data.shape)
-    '''count = 0
 
-    h1 = np.zeros(n_hidden)
-    output = np.array(np.zeros(n_class))
-    for i in range(train_data.shape[0]):
-        input_vector = train_data[i]
-        a = np.dot(W1, input_vector)
-        h1 = sigmoid(a)
-        hidden_input = h1[:, np.newaxis]
-        hidden_input = np.vstack((hidden_input, 1))
-        net = np.dot(W2, hidden_input)
-        output = sigmoid(net)
-        x = 'haha'
-    '''
+
+    a = np.dot(W1, train_data.T)
+    hid_1 = sigmoid(a)
+    bias_2 = np.ones((1, train_data.shape[0]), dtype=int)
+    input_2 = np.vstack((hid_1, bias_2))
+    print(input_2.shape)
+    print(W2.shape)
+    net = np.dot(W2, input_2)
+    o = sigmoid(net).T
+    error = -np.sum(np.multiply(label_mat, np.log(o))+np.multiply((1-label_mat), np.log(1-o)), axis=1)
+    obj_val = np.sum(error)/train_data.shape[0]
+    print(obj_val)
+
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
     # your gradient matrices are grad_W1 and grad_W2
     # you would use code similar to the one below to create a flat array
     # obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
-    obj_grad = np.zeros(params.shape)
 
+    delta=o-label_mat
+    djw2=np.matmul(delta.T, input_2.T)
+
+    W2noBias = W2[:,0:50]
+    coeff=np.matmul(np.multiply((1-hid_1), hid_1),train_data)
+    djw1=np.dot(delta, W2)
+    #obj_grad = np.hstack()
+    obj_grad=np.zeros(train_data.shape[0])
     return (obj_val, obj_grad)
 
 
@@ -134,18 +137,24 @@ def nnPredict(W1, W2, data):
     '''
     % nnPredict predicts the label of data given the parameter W1, W2 of Neural
     % Network.
-
     % Input:
     % W1: matrix of weights for hidden layer units
     % W2: matrix of weights for output layer units
     % data: matrix of data. Each row of this matrix represents the feature
     %       vector of a particular image
-
     % Output:
     % label: a column vector of predicted labels
     '''
 
-    labels = np.zeros((data.shape[0],))
-    # Your code here
+    bias = np.ones((data.shape[0], 1), dtype=int)
+    data = np.hstack((data, bias))
 
+    a = np.dot(W1, data.T)
+    hid_1 = sigmoid(a)
+    bias_2 = np.ones((1, data.shape[0]), dtype=int)
+    input_2 = np.vstack((hid_1, bias_2))
+    
+    net = np.dot(W2, input_2)
+    o = sigmoid(net).T
+    labels=np.argmax(o,axis=1)
     return labels
