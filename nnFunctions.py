@@ -103,11 +103,21 @@ def nnObjFunction(params, *args):
     label_mat[range(train_label.shape[0]), train_label] = 1
 
 
-    bias = np.ones((train_data.shape[0], 1), dtype=int)
-    train_data = np.hstack((train_data, bias))
-    out=np.matmul(train_data,W1.T)
+    bias1 = np.ones((train_data.shape[0], 1), dtype=int)
+    train_data = np.hstack((train_data, bias1))
+    
+    out1=np.matmul(train_data,W1.T)
+    s1=sigmoid(out1)
+    
+    bias2 = np.ones((s1.shape[0], 1), dtype=int)
+    inter = np.hstack((s1, bias2))
+    
+    out2=np.matmul(inter,W2.T)
+    ot=out2.T
+    s2=sigmoid(out2)
+    '''
     print(train_data.shape)
-    '''count = 0
+    count = 0
 
     h1 = np.zeros(n_hidden)
     output = np.array(np.zeros(n_class))
