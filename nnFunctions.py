@@ -99,21 +99,22 @@ def nnObjFunction(params, *args):
 
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
+    obj_val = 0
 
-    label_mat = np.zeros((n_data, 10))
-    label_mat[range(n_data), train_label.astype(dtype=int)] = 1
+    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat[range(train_label.shape[0]), train_label] = 1
 
-    bias = np.ones((n_data, 1), dtype=int)
+    bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
 
     a = np.dot(W1, train_data.T)
     hid_1 = sigmoid(a)
-    bias_2 = np.ones((1, n_data), dtype=int)
+    bias_2 = np.ones((1, train_data.shape[0]), dtype=int)
     input_2 = np.vstack((hid_1, bias_2))
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
     error = -np.sum(np.multiply(label_mat, np.log(o)) + np.multiply((1 - label_mat), np.log(1 - o)), axis=1)
-    obj_val = np.sum(error) / n_data
+    obj_val = np.sum(error) / train_data.shape[0]
     # print(obj_val)
 
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
@@ -130,16 +131,14 @@ def nnObjFunction(params, *args):
     val = np.multiply(val_1.T, val_2)
     djw1 = np.dot(val.T, train_data)/n_data
 
-
-    # print(obj_grad.shape)
-    w1sum=np.sum(W1)
-    w2sum=np.sum(W2)
-    obj_val=obj_val+(lambdaval/(2*n_data))*((w1sum*w1sum)+(w2sum*w2sum))
-
-    djw1=djw1+(lambdaval*W1)/n_data
-    djw2=djw2+(lambdaval*W2)/n_data
-
     obj_grad=np.hstack((djw1.flatten(), djw2.flatten()))
+    # print(obj_grad.shape)
+
+    obj_val = obj_val + (lambdaval / (2 * n_data)) * (np.sum(np.square(W1)) + np.sum((np.square(W2))))
+    djw1 = djw1 + (lambdaval * W1) / n_data
+    djw2 = djw2 + (lambdaval * W2) / n_data
+
+    obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
     return (obj_val, obj_grad)
 
 

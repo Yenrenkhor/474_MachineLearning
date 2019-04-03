@@ -71,7 +71,16 @@ def nnObjFunction(params, *args):
 
     obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
 
+    #regularization
+    # w1sum = np.sum(W1)
+    # w2sum = np.sum(W2)
 
+    obj_val = obj_val + (lambdaval / (2 * n_data)) * (np.sum(np.square(W1)) + np.sum((np.square(W2))))
+    djw1 = djw1 + (lambdaval * W1) / n_data
+    djw2 = djw2 + (lambdaval * W2) / n_data
+    # obj_val = obj_val + (lambdaval / (2 * n_data)) * (np.linalg.norm(np.square(djw1), 1) + np.linalg.norm((np.square(djw2)), 2))
+
+    obj_grad=np.hstack((djw1.flatten(), djw2.flatten()))
     return (obj_val, obj_grad)
 
 
@@ -81,7 +90,7 @@ n_hidden = 3
 n_class = 2
 training_data = np.array([np.linspace(0,1,num=5),np.linspace(1,0,num=5)])
 training_label = np.array([0,1])
-lambdaval = 0
+lambdaval = 1
 params = np.linspace(-5,5, num=26)
 args = (n_input, n_hidden, n_class, training_data, training_label, lambdaval)
 objval,objgrad = nnObjFunction(params, *args)
