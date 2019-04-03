@@ -10,9 +10,11 @@ def initializeWeights(n_in, n_out):
     '''
     initializeWeights return the random weights for Neural Network given the
     number of node in the input layer and output layer
+
     Input:
     n_in: number of nodes of the input layer
     n_out: number of nodes of the output layer
+
     Output:
     W: matrix of random initial weights with size (n_out x (n_in + 1))
     '''
@@ -67,14 +69,15 @@ def nnObjFunction(params, *args):
     % nnObjFunction computes the value of objective function (cross-entropy
     % with regularization) given the weights and the training data and lambda
     % - regularization hyper-parameter.
+
     % Input:
     % params: vector of weights of 2 matrices W1 (weights of connections from
     %     input layer to hidden layer) and W2 (weights of connections from
     %     hidden layer to output layer) where all of the weights are contained
     %     in a single vector.
-    % n_input: number of nodes in input layer (not including the bias node)
-    % n_hidden: number of nodes in hidden layer (not including the bias node)
-    % n_class: number of nodes in output layer (number of classes in
+    % n_input: number of node in input layer (not including the bias node)
+    % n_hidden: number of node in hidden layer (not including the bias node)
+    % n_class: number of node in output layer (number of classes in
     %     classification problem
     % train_data: matrix of training data. Each row of this matrix
     %     represents the feature vector of a particular image
@@ -82,6 +85,7 @@ def nnObjFunction(params, *args):
     %     in the vector represents the truth label of its corresponding image.
     % lambda: regularization hyper-parameter. This value is used for fixing the
     %     overfitting problem.
+
     % Output:
     % obj_val: a scalar value representing value of error function
     % obj_grad: a SINGLE vector (not a matrix) of gradient value of error function
@@ -96,14 +100,12 @@ def nnObjFunction(params, *args):
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
-    
-    #1 of k
-    label_mat = np.zeros((n_data, n_class))
-    label_mat[range(n_data), train_label] = 1
+
+    label_mat = np.zeros((train_label.shape[0], 10))
+    label_mat[range(train_label.shape[0]), train_label] = 1
 
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
-
 
     a = np.dot(W1, train_data.T)
     hid_1 = sigmoid(a)
@@ -111,8 +113,9 @@ def nnObjFunction(params, *args):
     input_2 = np.vstack((hid_1, bias_2))
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
-    error = -np.sum(np.multiply(label_mat, np.log(o))+np.multiply((1-label_mat), np.log(1-o)), axis=1)
-    obj_val = np.sum(error)/train_data.shape[0]
+    error = -np.sum(np.multiply(label_mat, np.log(o)) + np.multiply((1 - label_mat), np.log(1 - o)), axis=1)
+    obj_val = np.sum(error) / train_data.shape[0]
+    # print(obj_val)
 
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
     # your gradient matrices are grad_W1 and grad_W2
@@ -121,12 +124,16 @@ def nnObjFunction(params, *args):
 
     delta = o - label_mat
     djw2 = np.matmul(delta.T, input_2.T) / n_data
+    W2noBias = W2[:, 0: -1]
+    val_1 = np.multiply((1 - hid_1), hid_1)
+    val_2 = np.dot(delta, W2noBias)
+    # print(val_1.shape, val_2.shape)
+    val = np.multiply(val_1.T, val_2)
+    djw1 = np.dot(val.T, train_data)/n_data
 
-    W2noBias = W2[:, 0:-1]
-    z = np.multiply((1 - hid_1), hid_1)
-    err = np.multiply(np.dot(delta, W2noBias), z.T)
-    djw1 = np.matmul(np.multiply(z, err.T), train_data) / n_data  # this value is wrong
-    obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
+    obj_grad=np.hstack((djw1.flatten(), djw2.flatten()))
+    # print(obj_grad.shape)
+
     return (obj_val, obj_grad)
 
 
@@ -134,15 +141,18 @@ def nnPredict(W1, W2, data):
     '''
     % nnPredict predicts the label of data given the parameter W1, W2 of Neural
     % Network.
+
     % Input:
     % W1: matrix of weights for hidden layer units
     % W2: matrix of weights for output layer units
     % data: matrix of data. Each row of this matrix represents the feature
     %       vector of a particular image
+
     % Output:
     % label: a column vector of predicted labels
     '''
 
+    # labels = np.zeros((data.shape[0],))
     bias = np.ones((data.shape[0], 1), dtype=int)
     data = np.hstack((data, bias))
 
@@ -150,8 +160,9 @@ def nnPredict(W1, W2, data):
     hid_1 = sigmoid(a)
     bias_2 = np.ones((1, data.shape[0]), dtype=int)
     input_2 = np.vstack((hid_1, bias_2))
-    
+
     net = np.dot(W2, input_2)
     o = sigmoid(net).T
-    labels=np.argmax(o,axis=1)
+    labels = np.argmax(o, axis=1)
+
     return labels

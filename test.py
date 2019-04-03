@@ -41,7 +41,6 @@ def nnObjFunction(params, *args):
     n_input, n_hidden, n_class, train_data, train_label, lambdaval = args
     # First reshape 'params' vector into 2 matrices of weights W1 and W2
     n_data = train_data.shape[0]
-
     W1 = params[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
     W2 = params[(n_hidden * (n_input + 1)):].reshape((n_class, (n_hidden + 1)))
     obj_val = 0
@@ -63,17 +62,15 @@ def nnObjFunction(params, *args):
 
     delta = o - label_mat
     djw2 = np.matmul(delta.T, input_2.T) / n_data
+    W2noBias = W2[:, 0: -1]
+    val_1 = np.multiply((1 - hid_1), hid_1)
+    val_2 = np.dot(delta, W2noBias)
+    # print(val_1.shape, val_2.shape)
+    val = np.multiply(val_1.T, val_2)
+    djw1 = np.dot(val.T, train_data) / n_data
 
-    W2noBias = W2[:, 0:-1]
-    z = np.multiply((1 - hid_1), hid_1)
-    err = np.multiply(np.dot(delta, W2noBias), z.T)
-    djw1 = np.matmul(np.multiply(z, err.T), train_data) / n_data  # this value is wrong
     obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
 
-    # Make sure you reshape the gradient matrices to a 1D array. for instance if
-    # your gradient matrices are grad_W1 and grad_W2
-    # you would use code similar to the one below to create a flat array
-    # obj_grad = np.concatenate((grad_W1.flatten(), grad_W2.flatten()),0)
 
     return (obj_val, obj_grad)
 
