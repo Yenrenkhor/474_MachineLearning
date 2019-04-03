@@ -102,7 +102,7 @@ def nnObjFunction(params, *args):
     obj_val = 0
 
     label_mat = np.zeros((train_label.shape[0], 10))
-    label_mat[range(train_label.shape[0]), train_label] = 1
+    label_mat[range(n_data), train_label.astype(int)] = 1
 
     bias = np.ones((train_data.shape[0], 1), dtype=int)
     train_data = np.hstack((train_data, bias))
