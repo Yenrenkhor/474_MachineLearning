@@ -3,8 +3,8 @@ Neural Network Script Starts here
 '''
 from nnFunctions import *
 # you may experiment with a small data set (mnist_sample.pickle) first
-filename = 'mnist_sample.pickle'
-#filename = 'AI_quick_draw.pickle'
+# filename = 'mnist_sample.pickle'
+filename = 'AI_quick_draw.pickle'
 train_data, train_label, test_data, test_label = preprocess(filename)
 
 #  Train Neural Network
