@@ -16,7 +16,7 @@ n_class = 10
 n_input = train_data.shape[1]
 # for n_hidden in (4,8,12,16,20):
 
-    # set the number of nodes in hidden unit (not including bias unit)
+# set the number of nodes in hidden unit (not including bias unit)
 n_hidden = 50
 
 
@@ -34,7 +34,8 @@ x=[]
 train=[]
 test=[]
 times=[]
-for lambdaval in np.linspace(0,60,12):
+nhgf=np.linspace(0,60,13)
+for lambdaval in nhgf:
     st = time.time()
     args = (n_input, n_hidden, n_class, train_data, train_label, lambdaval)
 
@@ -54,8 +55,14 @@ for lambdaval in np.linspace(0,60,12):
     predicted_label = nnPredict(W1, W2, test_data)
     test.append(100 * np.mean((predicted_label == test_label).astype(float)))
 
+fig=plt.figure(figsize=(20,6))
+ax=plt.subplot(2,1,1)
 plt.plot(x,times)
+ax.set_title('time')
+ax=plt.subplot(2,1,2)
 plt.plot(x,train,'g',x,test,'r')
+ax.set_title('Accuracy')
+plt.show()
 
 # Reshape nnParams from 1D vector into W1 and W2 matrices
 # W1 = nn_params.x[0:n_hidden * (n_input + 1)].reshape((n_hidden, (n_input + 1)))
@@ -66,8 +73,8 @@ plt.plot(x,train,'g',x,test,'r')
 
 # find the accuracy on Training Dataset
 # predicted_label = nnPredict(W1, W2, train_data)
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
+#print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label == train_label).astype(float))) + '%')
 
 # find the accuracy on Testing Dataset
 # predicted_label = nnPredict(W1, W2, test_data)
-print('\n Test set Accuracy:    ' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
+#print('\n Test set Accuracy:    ' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
