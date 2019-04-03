@@ -16,7 +16,6 @@ def nnObjFunction(params, *args):
     % nnObjFunction computes the value of objective function (cross-entropy
     % with regularization) given the weights and the training data and lambda
     % - regularization hyper-parameter.
-
     % Input:
     % params: vector of weights of 2 matrices W1 (weights of connections from
     %     input layer to hidden layer) and W2 (weights of connections from
@@ -32,7 +31,6 @@ def nnObjFunction(params, *args):
     %     in the vector represents the truth label of its corresponding image.
     % lambda: regularization hyper-parameter. This value is used for fixing the
     %     overfitting problem.
-
     % Output:
     % obj_val: a scalar value representing value of error function
     % obj_grad: a SINGLE vector (not a matrix) of gradient value of error function
@@ -69,7 +67,7 @@ def nnObjFunction(params, *args):
     W2noBias = W2[:, 0:-1]
     z = np.multiply((1 - hid_1), hid_1)
     err = np.multiply(np.dot(delta, W2noBias), z.T)
-    djw1 = np.multiply((z, err.T), train_data) / n_data #this value is wrong
+    djw1 = np.matmul(np.multiply(z, err.T), train_data) / n_data  # this value is wrong
     obj_grad = np.hstack((djw1.flatten(), djw2.flatten()))
 
     # Make sure you reshape the gradient matrices to a 1D array. for instance if
