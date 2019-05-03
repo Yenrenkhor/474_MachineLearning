@@ -12,19 +12,19 @@ class NBC(BaseEstimator):
     '''
 
     def __init__(self, a=1, b=1, alpha=1):
-        self.__a = a
-        self.__b = b
-        self.__alpha = alpha
-        self.__params = None
+        self.a = a
+        self.b = b
+        self.alpha = alpha
+        self.params = None
         
     def get_a(self):
-        return self.__a
+        return self.a
 
     def get_b(self):
-        return self.__b
+        return self.b
 
     def get_alpha(self):
-        return self.__alpha
+        return self.alpha
 
     # you need to implement this function
 
@@ -46,15 +46,10 @@ class NBC(BaseEstimator):
         params = None 
         
         N = X.shape[0]
-        y1, y2 = self.__classes
-        N1 = 0
         
-        for i in range(0, N):
-            if X[i,0] == y1:
-                N1 = N1 + 1
+        N1 = np.bincount(y)[1]
         
         theta = (N1 + a)/(N + a + b)
-        
         # do not change the line below
         self.__params = params
     
