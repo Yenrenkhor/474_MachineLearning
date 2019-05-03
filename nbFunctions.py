@@ -44,6 +44,17 @@ class NBC(BaseEstimator):
         # remove next line and implement from here
         # you are free to use any data structure for paramse
         params = None 
+        
+        N = X.shape[0]
+        y1, y2 = self.__classes
+        N1 = 0
+        
+        for i in range(0, N):
+            if X[i,0] == y1:
+                N1 = N1 + 1
+        
+        theta = (N1 + a)/(N + a + b)
+        
         # do not change the line below
         self.__params = params
     
