@@ -50,6 +50,29 @@ class NBC(BaseEstimator):
         N1 = np.bincount(y)[1]
         
         theta = (N1 + a)/(N + a + b)
+        
+        #set up for binning
+        X1j = np.zeros(18)
+        X2j = np.zeros(18)
+        init = False
+        for i in range(y.shape[0]):
+            if y[i] == 1:
+                if init == False:
+                    X1j = X[i,:]
+                    init = True
+                else:
+                    X1j= np.vstack((X1j, X[i,:]))
+            else:
+                if init == False:
+                    X2j = X[i,:]
+                    init = True
+                else:
+                    X2j= np.vstack((X2j, X[i,:]))
+        
+        #bin        
+        for i in range(X1j.shape[1]):
+            np.bincount(X1j[:,i])
+        
         # do not change the line below
         self.__params = params
     
