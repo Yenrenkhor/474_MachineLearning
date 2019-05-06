@@ -95,7 +95,7 @@ class NBC(BaseEstimator):
                     theta2[j,i] = 0
                 
         print("done with counts")
-
+        params = theta, theta1, theta2
 
         self.__params = params
     
@@ -115,8 +115,12 @@ class NBC(BaseEstimator):
         b = self.get_b()
         alpha = self.get_alpha()
         #remove next line and implement from here
-        print(params)
-
+        #print(params)
+        
+        theta = params[0]
+        theta1 = params[1]
+        theta2 = params[2]
+        
         predictions = np.random.choice(self.__classes,np.unique(Xtest.shape[0]))
 
 
