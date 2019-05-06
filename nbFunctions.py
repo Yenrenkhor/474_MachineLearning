@@ -121,12 +121,55 @@ class NBC(BaseEstimator):
         theta = params[0]
         theta1 = params[1]
         theta2 = params[2]
-        xj = np.array([])
+        xjy1 = np.array([])
+        xjy2 = np.array([])
+        mult1 = []
+        mult2 = []
 
-        xjy1 = np.matmul(Xtest, theta1.T)
-        xjy2 = np.matmul(Xtest, theta2.T)
+        for i in range(Xtest.shape[0]):
+            currval1 = 0
+            retval1 = 0
 
-        predictions = np.random.choice(self.__classes, np.unique(Xtest.shape[0]))
+            for j in range(Xtest.shape[1]):
+                val = Xtest[i][j]
+                theta_val = theta1[val][j]
+                if currval1 is 0:
+                    currval1 = theta_val
+                    retval1 = currval1
+                else:
+                    retval1 = currval1 * theta_val
+                    currval1 = retval1
+            mult1.append([retval1])
+
+
+
+        for i in range(Xtest.shape[0]):
+            currval2 = 0
+            retval2 = 0
+            for j in range(Xtest.shape[1]):
+                val = Xtest[i][j]
+                theta_val = theta2[val][j]
+                if currval2 is 0:
+                    currval2 = theta_val
+                    retval2 = currval2
+                else:
+                    retval2 = currval2 * theta_val
+                    currval2 = retval2
+            mult2.append(retval2)
+
+        xjy1 = np.array(mult1)
+        xjy2 = np.array(mult2)
+
+        xjy1 = np.prod(xjy1)
+        xjy2 = np.prod(xjy2)
+
+        a = 'gaga'
+
+        # xjy1 = np.matmul(Xtest, theta1.T)
+        # xjy2 = np.matmul(Xtest, theta2.T)
+
+        # predictions = np.random.choice(self.__classes, np.unique(Xtest.shape[0]))
+        test = ((theta * xjy1) )
 
         y1x = (theta * xjy1) / ((theta * xjy1) + ((1 - theta) * xjy2))
         y2x = ((1 - theta) * xjy2) / ((theta * xjy1) + ((1 - theta) * xjy2))
