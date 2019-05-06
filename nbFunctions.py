@@ -47,31 +47,54 @@ class NBC(BaseEstimator):
         
         N = X.shape[0]
         
+        d = X.shape[1]
+        
         N1 = np.bincount(y)[1]
         
         theta = (N1 + a)/(N + a + b)
         
-        #set up for binning
-        X1j = np.zeros(18)
-        X2j = np.zeros(18)
-        init = False
-        for i in range(y.shape[0]):
-            if y[i] == 1:
-                if init == False:
-                    X1j = X[i,:]
-                    init = True
-                else:
-                    X1j= np.vstack((X1j, X[i,:]))
-            else:
-                if init == False:
-                    X2j = X[i,:]
-                    init = True
-                else:
-                    X2j= np.vstack((X2j, X[i,:]))
+        #split up X1 and X2
+        X1 = np.zeros((N1, d), dtype = int)
+        X2 = np.zeros((N-N1, d), dtype = int)
         
-        #bin        
-        for i in range(X1j.shape[1]):
-            np.bincount(X1j[:,i])
+        #iterate through X1 and X2 respectively
+        k = 0
+        l = 0
+        for i in range(N):
+            if y[i] == 1:
+                X1[k] = X[i,:]
+                k = k + 1
+            else:
+                X2[l] = X[i,:]
+                l = l + 1
+        
+        print("done splitting X")
+        
+        #init counts of each feature
+        am = np.unique(X).shape[0]
+        N1j = np.zeros((am, d))
+        N2j = np.zeros((am, d))
+        K = np.zeros(d)
+        theta1 = np.zeros((am, d))
+        theta2 = np.zeros((am, d))
+        
+        for i in range(d):
+            N1j[:,i] = np.bincount(X1[:,i], minlength = am)
+            N2j[:,i] = np.bincount(X2[:,i], minlength = am)
+            K[i] = np.unique(X[:, i]).shape[0]
+            
+            for j in range(am):
+                if(N1j[j,i] != 0):
+                    theta1[j,i] = (N1j[j,i] + alpha)/(N1 + K[i]*alpha)
+                else:
+                    theta1[j,i] = 0
+                
+                if(N2j[j,i] != 0):
+                    theta2[j,i] = (N2j[j,i] + alpha)/(N-N1 + K[i]*alpha)
+                else:
+                    theta2[j,i] = 0
+                
+        print("done with counts")
         
         # do not change the line below
         self.__params = params
