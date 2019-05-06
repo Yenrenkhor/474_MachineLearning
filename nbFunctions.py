@@ -43,36 +43,63 @@ class NBC(BaseEstimator):
 
         # remove next line and implement from here
         # you are free to use any data structure for paramse
-        params = None 
-        
+        params = None
+
         N = X.shape[0]
-        
-        N1 = np.bincount(y)[1]
-        
-        theta = (N1 + a)/(N + a + b)
-        
-        #set up for binning
-        X1j = np.zeros(18)
-        X2j = np.zeros(18)
-        init = False
-        for i in range(y.shape[0]):
-            if y[i] == 1:
-                if init == False:
-                    X1j = X[i,:]
-                    init = True
+        N1 = []
+        N2 = []
+        #  if y = 1
+        y1x = np.array([])
+        #  if y = 2
+        y2x = np.array([])
+
+        for x in range(X.shape[0]):
+            if y[x] == 1:
+                if y1x.size == 0:
+                    val = X[x]
+                    y1x = np.array([val])
+
                 else:
-                    X1j= np.vstack((X1j, X[i,:]))
+                    val = np.array([X[x]])
+                    y1x = np.append(y1x, val, axis=0)
             else:
-                if init == False:
-                    X2j = X[i,:]
-                    init = True
+                if y2x.size == 0:
+                    val = X[x]
+                    y2x = np.array([val])
                 else:
-                    X2j= np.vstack((X2j, X[i,:]))
+                    val = np.array([X[x]])
+                    y2x = np.append(y2x, val, axis=0)
+        # params = (y1x)
+
+        Y1 = (y1x.shape[0] + a) / (X.shape[0] + a + b)
+        Y2 = (y2x.shape[0] + a) / (X.shape[0] + a + b)
         
-        #bin        
-        for i in range(X1j.shape[1]):
-            np.bincount(X1j[:,i])
-        
+        a = 'aa'
+
+        # N1 = np.bincount(y)[1]
+        # print(N1)
+
+        # set up for binning
+        # X1j = np.zeros(18)
+        # X2j = np.zeros(18)
+        # init = False
+        # for i in range(y.shape[0]):
+        #     if y[i] == 1:
+        #         if init == False:
+        #             X1j = X[i, :]
+        #             init = True
+        #         else:
+        #             X1j = np.vstack((X1j, X[i, :]))
+        #     else:
+        #         if init == False:
+        #             X2j = X[i, :]
+        #             init = True
+        #         else:
+        #             X2j = np.vstack((X2j, X[i, :]))
+        #
+        # # bin
+        # for i in range(X1j.shape[1]):
+        #     np.bincount(X1j[:, i])
         # do not change the line below
         self.__params = params
     
@@ -92,7 +119,11 @@ class NBC(BaseEstimator):
         b = self.get_b()
         alpha = self.get_alpha()
         #remove next line and implement from here
+        print(params)
+
         predictions = np.random.choice(self.__classes,np.unique(Xtest.shape[0]))
+
+
         #do not change the line below
         return predictions
         
