@@ -181,7 +181,7 @@ class NBC(BaseEstimator):
         
         for i in range(xjy1.shape[0]):
             t1 = np.asscalar(theta * xjy1[i])
-            t2 = np.asscalar(theta * xjy2[i])
+            t2 = np.asscalar((1-theta) * xjy2[i])
             bot = t1 + t2
             if bot !=0:
                 p1 = t1/bot
@@ -218,17 +218,7 @@ def evaluateBias(y_pred, y_sensitive):
     Output:
     di (disparateimpact): scalar value
     '''
-    # remove next line and implement from here
-    def evaluateBias(y_pred, y_sensitive):
-    '''
-    This function computes the Disparate Impact in the classification predictions (y_pred),
-    with respect to a sensitive feature (y_sensitive).
-    Inputs:
-    y_pred: N length numpy array
-    y_sensitive: N length numpy array
-    Output:
-    di (disparateimpact): scalar value
-    '''
+
     # remove next line and implement from here
     y1s1 = 0
     y1s2 = 0
