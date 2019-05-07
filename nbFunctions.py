@@ -207,8 +207,35 @@ def evaluateBias(y_pred, y_sensitive):
     di (disparateimpact): scalar value
     '''
     # remove next line and implement from here
-    di = 0
+    def evaluateBias(y_pred, y_sensitive):
+    '''
+    This function computes the Disparate Impact in the classification predictions (y_pred),
+    with respect to a sensitive feature (y_sensitive).
+    Inputs:
+    y_pred: N length numpy array
+    y_sensitive: N length numpy array
+    Output:
+    di (disparateimpact): scalar value
+    '''
+    # remove next line and implement from here
+    y1s1 = 0
+    y1s2 = 0
+    y2s1 = 0
+    y2s2 = 0
+    N = y_sensitive.shape[0]
+    for i in range(len(y_sensitive)):
+        if y_pred[i] == 1 and y_sensitive[i] == 1:
+            y1s1 += 1
+        elif y_pred[i] == 1 and y_sensitive[i] == 2:
+            y1s2 += 1
+        elif y_pred[i] == 2 and y_sensitive[i] == 1:
+            y2s1 += 1
+        else:
+            y2s2 += 1
 
+    a = 'hah'
+    di = y2s2 / y2s1
+    
     # do not change the line below
     return di
 
