@@ -72,7 +72,7 @@ class NBC(BaseEstimator):
         print("done splitting X")
 
         # init counts of each feature
-        am = np.unique(X).shape[0]
+        am = np.unique(X).shape[0] + 1
         N1j = np.zeros((am, d))
         N2j = np.zeros((am, d))
         K = np.zeros(d)
@@ -117,20 +117,36 @@ class NBC(BaseEstimator):
         alpha = self.get_alpha()
         # remove next line and implement from here
         # print(params)
-
+        
+        #load learned thetas
         theta = params[0]
         theta1 = params[1]
         theta2 = params[2]
+        #print(theta1.shape)
+        #print(theta2.shape)
+        
+        #init storage
         xjy1 = np.array([])
         xjy2 = np.array([])
         mult1 = []
         mult2 = []
         i = 0
         retval1 = 0
+
+        #for all rows
         for i in range(Xtest.shape[0]):
             currval1 = 0
+            #print("row:")
+            #print(i)
+            
+            #for all columns
             for j in range(Xtest.shape[1]):
-                val = Xtest[i][j]
+                val = Xtest[i][j] #get feature
+                #print("col:")
+                #print(j)
+                #print("val:")
+                #print(val)
+                
                 theta_val = theta1[val][j]
                 if currval1 is 0:
                     currval1 = theta_val
@@ -139,10 +155,10 @@ class NBC(BaseEstimator):
                     retval1 = currval1 * theta_val
                     currval1 = retval1
             mult1.append([retval1])
-            i += 1
+            i += 1 #is this necessary?
 
         retval2 = 0
-
+        
         for i in range(Xtest.shape[0]):
             currval2 = 0
 
@@ -159,7 +175,7 @@ class NBC(BaseEstimator):
 
         xjy1 = np.array(mult1)
         xjy2 = np.array(mult2)
-
+        
         # xjy1 = np.prod(mult1)
         # xjy2 = np.prod(mult2)
 
@@ -168,11 +184,11 @@ class NBC(BaseEstimator):
         # xjy1 = np.matmul(Xtest, theta1.T)
         # xjy2 = np.matmul(Xtest, theta2.T)
 
-        # predictions = np.random.choice(self.__classes, np.unique(Xtest.shape[0]))
-        test = ((theta * xjy1) )
+        predictions = np.random.choice(self.__classes, np.unique(Xtest.shape[0]))
+        #test = ((theta * xjy1) )
 
-        y1x = (theta * xjy1) / ((theta * xjy1) + ((1 - theta) * xjy2))
-        y2x = ((1 - theta) * xjy2) / ((theta * xjy1) + ((1 - theta) * xjy2))
+        #y1x = (theta * xjy1) / ((theta * xjy1) + ((1 - theta) * xjy2))
+        #y2x = ((1 - theta) * xjy2) / ((theta * xjy1) + ((1 - theta) * xjy2))
         a = 'h'
         # do not change the line below
         return predictions
