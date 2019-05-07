@@ -69,7 +69,7 @@ class NBC(BaseEstimator):
                 X2[l] = X[i, :]
                 l = l + 1
 
-        print("done splitting X")
+        #print("done splitting X")
 
         # init counts of each feature
         am = np.unique(X).shape[0] + 1
@@ -95,7 +95,7 @@ class NBC(BaseEstimator):
                 else:
                     theta2[j, i] = 0
 
-        print("done with counts")
+        #print("done with counts")
         params = theta, theta1, theta2
 
         self.__params = params
@@ -130,6 +130,7 @@ class NBC(BaseEstimator):
         xjy2 = np.array([])
         mult1 = []
         mult2 = []
+        res = []
         i = 0
         retval1 = 0
 
@@ -176,19 +177,30 @@ class NBC(BaseEstimator):
         xjy1 = np.array(mult1)
         xjy2 = np.array(mult2)
         
-        # xjy1 = np.prod(mult1)
-        # xjy2 = np.prod(mult2)
-
+        a = 'btr'
+        
+        for i in range(xjy1.shape[0]):
+            t1 = np.asscalar(theta * xjy1[i])
+            t2 = np.asscalar(theta * xjy2[i])
+            bot = t1 + t2
+            if bot !=0:
+                p1 = t1/bot
+                p2 = t2/bot
+            #else:
+                #print("bot = 0, t1:t2")
+                #print(t1)
+                #print(t2)
+            if(p1 > p2):
+                res.append(1)
+            else:
+                res.append(2)
+        
         a = 'gaga'
 
-        # xjy1 = np.matmul(Xtest, theta1.T)
-        # xjy2 = np.matmul(Xtest, theta2.T)
-
-        predictions = np.random.choice(self.__classes, np.unique(Xtest.shape[0]))
-        #test = ((theta * xjy1) )
-
-        #y1x = (theta * xjy1) / ((theta * xjy1) + ((1 - theta) * xjy2))
-        #y2x = ((1 - theta) * xjy2) / ((theta * xjy1) + ((1 - theta) * xjy2))
+        
+        predictions = np.array(res)
+        
+        
         a = 'h'
         # do not change the line below
         return predictions
