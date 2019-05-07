@@ -88,15 +88,15 @@ class NBC(BaseEstimator):
                 if (N1j[j, i] != 0):
                     theta1[j, i] = (N1j[j, i] + alpha) / (N1 + K[i] * alpha)
                 else:
-                    theta1[j, i] = alpha/(N1 + K[i] * alpha)
+                    theta1[j, i] = 0
 
                 if (N2j[j, i] != 0):
                     theta2[j, i] = (N2j[j, i] + alpha) / (N - N1 + K[i] * alpha)
                 else:
-                    theta2[j, i] = alpha/(N - N1 + K[i] * alpha)
+                    theta2[j, i] = 0
 
         #print("done with counts")
-        params = theta, theta1, theta2
+        params = theta, theta1, theta2, (alpha/(N1 + K[i] * alpha)), (alpha/(N - N1 + K[i] * alpha))
 
         self.__params = params
 
@@ -122,6 +122,8 @@ class NBC(BaseEstimator):
         theta = params[0]
         theta1 = params[1]
         theta2 = params[2]
+        prior1 = params[3]
+        prior2 = params[4]
         #print(theta1.shape)
         #print(theta2.shape)
         
@@ -149,6 +151,8 @@ class NBC(BaseEstimator):
                 #print(val)
                 
                 theta_val = theta1[val][j]
+                if theta_val==0:
+                    theta_val=prior1;
                 if currval1 is 0:
                     currval1 = theta_val
                     retval1 = currval1
@@ -166,6 +170,8 @@ class NBC(BaseEstimator):
             for j in range(Xtest.shape[1]):
                 val = Xtest[i][j]
                 theta_val = theta2[val][j]
+                if theta_val==0:
+                    theta_val=prior2;
                 if currval2 is 0:
                     currval2 = theta_val
                     retval2 = currval2
