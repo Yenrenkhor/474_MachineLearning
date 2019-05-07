@@ -1,7 +1,7 @@
 from sklearn.base import BaseEstimator
 import numpy as np
 import scipy.stats as stats
-
+from functools import reduce
 
 # For this assignment we will implement the Naive Bayes classifier as a
 # a class, sklearn style. You only need to modify the fit and predict functions.
@@ -125,11 +125,10 @@ class NBC(BaseEstimator):
         xjy2 = np.array([])
         mult1 = []
         mult2 = []
-
+        i = 0
+        retval1 = 0
         for i in range(Xtest.shape[0]):
             currval1 = 0
-            retval1 = 0
-
             for j in range(Xtest.shape[1]):
                 val = Xtest[i][j]
                 theta_val = theta1[val][j]
@@ -140,12 +139,13 @@ class NBC(BaseEstimator):
                     retval1 = currval1 * theta_val
                     currval1 = retval1
             mult1.append([retval1])
+            i += 1
 
-
+        retval2 = 0
 
         for i in range(Xtest.shape[0]):
             currval2 = 0
-            retval2 = 0
+
             for j in range(Xtest.shape[1]):
                 val = Xtest[i][j]
                 theta_val = theta2[val][j]
@@ -155,13 +155,13 @@ class NBC(BaseEstimator):
                 else:
                     retval2 = currval2 * theta_val
                     currval2 = retval2
-            mult2.append(retval2)
+            mult2.append([retval2])
 
         xjy1 = np.array(mult1)
         xjy2 = np.array(mult2)
 
-        xjy1 = np.prod(xjy1)
-        xjy2 = np.prod(xjy2)
+        # xjy1 = np.prod(mult1)
+        # xjy2 = np.prod(mult2)
 
         a = 'gaga'
 
