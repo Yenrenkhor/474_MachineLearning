@@ -88,12 +88,12 @@ class NBC(BaseEstimator):
                 if (N1j[j, i] != 0):
                     theta1[j, i] = (N1j[j, i] + alpha) / (N1 + K[i] * alpha)
                 else:
-                    theta1[j, i] = 0
+                    theta1[j, i] = alpha/(N1 + K[i] * alpha)
 
                 if (N2j[j, i] != 0):
                     theta2[j, i] = (N2j[j, i] + alpha) / (N - N1 + K[i] * alpha)
                 else:
-                    theta2[j, i] = 0
+                    theta2[j, i] = alpha/(N - N1 + K[i] * alpha)
 
         #print("done with counts")
         params = theta, theta1, theta2
