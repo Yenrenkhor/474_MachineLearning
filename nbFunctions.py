@@ -149,8 +149,10 @@ class NBC(BaseEstimator):
                 #print(j)
                 #print("val:")
                 #print(val)
-                
-                theta_val = theta1[val][j]
+                if val<0 or val>=Xtest.shape[1]:
+                    theta_val=prior1;
+                else:
+                    theta_val = theta1[val][j]
                 if theta_val==0:
                     theta_val=prior1;
                 if currval1 is 0:
@@ -169,7 +171,10 @@ class NBC(BaseEstimator):
 
             for j in range(Xtest.shape[1]):
                 val = Xtest[i][j]
-                theta_val = theta2[val][j]
+                if val<0 or val>=Xtest.shape[1]:
+                    theta_val=prior2;
+                else:
+                    theta_val = theta2[val][j]
                 if theta_val==0:
                     theta_val=prior2;
                 if currval2 is 0:
